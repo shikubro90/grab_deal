@@ -3,11 +3,12 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const _geist = Geist({ subsets: ["latin"], display: 'swap' });
+const _geistMono = Geist_Mono({ subsets: ["latin"], display: 'swap', preload: false });
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-2PRERNRHTS";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://grabdeal.net').replace(/\/$/, '')
+const API_ORIGIN = (() => { try { return new URL(process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1').origin } catch { return 'https://grabdeal-server.vercel.app' } })()
 const SITE_DESC = 'Find the best deals, coupons and offers from top brands. Save money with GrabDeal.'
 
 export const metadata: Metadata = {
@@ -80,6 +81,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="" />
+        <link rel="preconnect" href={API_ORIGIN} crossOrigin="" />
+      </head>
       <body className="font-sans antialiased bg-background">
         <script
           type="application/ld+json"

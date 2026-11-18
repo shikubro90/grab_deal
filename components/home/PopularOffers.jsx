@@ -1,10 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { useOffers, SectionHeader, Skeletons, EmptyState } from "./useOffers";
+import { SectionHeader, EmptyState } from "./useOffers";
 
-export default function PopularOffers() {
-  const { items, loading, error } = useOffers();
+export default function PopularOffers({ items }) {
+  const loading = false, error = false;
   const offers = [...items]
     .sort((a, b) => b.discount - a.discount || new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 4);
@@ -13,7 +11,6 @@ export default function PopularOffers() {
     <section className="mx-auto mt-8 max-w-7xl sm:mt-12 px-4 lg:px-8">
       <SectionHeader title="Popular Offers of the Day" href="/offer" />
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        {loading && <Skeletons count={4} className="h-40" />}
         {offers.map((o) => (
           <Link
             key={o._id}

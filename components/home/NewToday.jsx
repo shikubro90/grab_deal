@@ -1,50 +1,19 @@
 import OfferCard from "../cards/OfferCard";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://grabdeal-server.vercel.app/api/v1";
-
-async function getNewTodayOffers() {
-  const res = await fetch(`${API_URL}/offers`, {
-    next: { revalidate: 60 },
-  });
-
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  const offers = data?.data?.products || data?.data || data || [];
-
-  return offers
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 4)
-    .map((item) => ({
-      id: item._id,
-      title: item.title,
-      brand: item.brands,
-      image: item.image,
-      discount: `${item.discount}% OFF`,
-      ends: item.expiryDate
-        ? new Date(item.expiryDate).toLocaleDateString("en-GB")
-        : "N/A",
-      online: item.offerType === "online",
-      verified: item.verified,
-      category: item.category,
-      merchant: item.merchantName,
-      applicableOn: item.offerType === "online" ? "Website & App" : "Store",
-      description: item.description,
-      shopLink: item.shopLink,
-      terms: item.termsAndCondition
-        ? item.termsAndCondition.split("\n")
-        : [],
-      features: [
-        "100% Original",
-        "Easy Returns",
-        "Secure Payment",
-        "Premium Quality",
-      ],
-    }));
+function toCard(item) {
+  return {
+    id: item._id,
+    title: item.title,
+    brand: item.brands || item.merchantName,
+    image: item.image,
+    discount: `${item.discount}% OFF`,
+    ends: item.expiryDate ? new Date(item.expiryDate).toLocaleDateString("en-GB") : "N/A",
+    online: item.offerType === "online",
+  };
 }
 
-export default async function NewToday() {
-  const newToday = await getNewTodayOffers();
+export default function NewToday({ items }) {
+  const newToday = [...items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4).map(toCard);
 
   return (
     <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
@@ -56,7 +25,7 @@ export default async function NewToday() {
           <h2 className="text-3xl font-extrabold">New Today</h2>
         </div>
 
-        <a className="hidden text-sm font-bold text-primary md:block" href="/offer">
+        <a className="flex min-h-11 items-center text-sm font-bold text-primary" href="/offer">
           View All →
         </a>
       </div>

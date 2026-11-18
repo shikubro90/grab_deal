@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { useOffers, endsLabel, SectionHeader, Skeletons, EmptyState } from "./useOffers";
+import SmartImage from "../cards/SmartImage";
+import { endsLabel, SectionHeader, EmptyState } from "./useOffers";
 
-export default function TopCoupons() {
-  const { items, loading, error } = useOffers();
+export default function TopCoupons({ items }) {
+  const loading = false, error = false;
   const [tab, setTab] = useState("All");
 
   const cats = ["All", ...Array.from(new Set(items.map((o) => o.category).filter(Boolean)))];
@@ -23,9 +23,10 @@ export default function TopCoupons() {
         {cats.map((c) => (
           <button
             key={c}
+            aria-pressed={tab === c}
             onClick={() => setTab(c)}
             className={`min-h-11 shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition ${
-              tab === c ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-accent"
+              tab === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground hover:bg-border"
             }`}
           >
             {c}
@@ -34,7 +35,6 @@ export default function TopCoupons() {
       </div>
 
       <div className="space-y-3">
-        {loading && <Skeletons count={4} className="h-24" />}
         {rows.map((o) => (
           <Link
             key={o._id}
@@ -42,7 +42,7 @@ export default function TopCoupons() {
             className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 sm:gap-4 sm:rounded-2xl sm:p-4 shadow-sm transition hover:shadow-lg"
           >
             <div className="relative flex h-12 w-12 shrink-0 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
-              <Image src={o.image} alt={o.name || "Coupon"} fill sizes="64px" className="object-contain" />
+              <SmartImage src={o.image || "/placeholder.png"} alt={o.name || "Coupon"} fill sizes="64px" className="object-contain" />
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="truncate text-sm font-extrabold sm:text-base text-card-foreground">

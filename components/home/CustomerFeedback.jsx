@@ -1,43 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import SmartImage from '../cards/SmartImage';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
-
-export default function CustomerFeedback() {
-  const [reviews, setReviews] = useState([]);
+export default function CustomerFeedback({ reviews }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  useEffect(() => {
     if (reviews.length <= 3) return;
-
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const interval = setInterval(() => {
       setActive((prev) => (prev + 1) % reviews.length);
-    }, 4000);
-
+    }, 5000);
     return () => clearInterval(interval);
   }, [reviews.length]);
-
-  const fetchReviews = async () => {
-    try {
-      const res = await fetch(`${API_URL}/reviews?status=active`);
-      const data = await res.json();
-
-      const result =
-        data?.data?.result || [];
-
-        
-
-      setReviews(result);
-    } catch (error) {
-    }
-  };
 
   if (!reviews.length) return null;
 
@@ -66,7 +42,7 @@ export default function CustomerFeedback() {
           Our Customers’ Feedback
         </h2>
 
-        <p className="mx-auto mt-2 max-w-2xl text-gray-500">
+        <p className="mx-auto mt-2 max-w-2xl text-gray-600">
           Users share how GrabDeal helps them find active discounts before
           purchasing from stores.
         </p>
@@ -80,7 +56,7 @@ export default function CustomerFeedback() {
               className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
               <div className="mb-5 flex items-center gap-4">
-                <Image
+                <SmartImage
                   src={item.image || '/avatar.png'}
                   alt={item.name || 'Customer'}
                   width={56}
@@ -94,17 +70,17 @@ export default function CustomerFeedback() {
                   </h3>
 
                   {item.role && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-600">
                       {item.role}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="mb-4 flex text-yellow-400">
+              <div className="mb-4 flex text-yellow-500" role="img" aria-label={`Rated ${Number(item.rating || 5)} out of 5`}>
                 {Array.from({ length: Number(item.rating || 5) }).map(
                   (_, index) => (
-                    <span key={index}>★</span>
+                    <span key={index} aria-hidden="true">★</span>
                   )
                 )}
               </div>
@@ -120,6 +96,7 @@ export default function CustomerFeedback() {
           <>
             <button
               onClick={prevSlide}
+              aria-label="Previous reviews"
               className="absolute -left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-primary shadow-xl lg:block"
             >
               ‹
@@ -127,6 +104,7 @@ export default function CustomerFeedback() {
 
             <button
               onClick={nextSlide}
+              aria-label="Next reviews"
               className="absolute -right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-primary shadow-xl lg:block"
             >
               ›
@@ -141,12 +119,11 @@ export default function CustomerFeedback() {
             <button
               key={item._id}
               onClick={() => setActive(index)}
-              className={
-                index === active
-                  ? 'h-3 w-10 rounded-full bg-primary transition-all'
-                  : 'h-3 w-3 rounded-full bg-primary/20 transition-all'
-              }
-            />
+              aria-label={`Show review ${index + 1}`}
+              className="flex h-6 min-w-6 items-center justify-center"
+            >
+              <span className={index === active ? 'block h-3 w-10 rounded-full bg-primary' : 'block h-3 w-3 rounded-full bg-primary/30'} />
+            </button>
           ))}
         </div>
       )}

@@ -71,8 +71,8 @@ export default async function OffersPage({ searchParams }) {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-              {offers.map((offer) => (
-                <OfferCard key={offer.id} offer={offer} />
+              {offers.map((offer, i) => (
+                <OfferCard key={offer.id} offer={offer} priority={i < 2} headingTag="h2" />
               ))}
             </div>
           )}
