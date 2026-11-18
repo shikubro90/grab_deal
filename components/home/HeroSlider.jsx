@@ -177,7 +177,10 @@ function OfferSpotlight({ offers, reduced }) {
   );
 }
 
-export default function HeroSlider({ sliders = [], offers = [] }) {
+/** @param {{ sliders?: any[], offers?: any[] }} props */
+export default function HeroSlider(props) {
+  const sliders = props.sliders || [];
+  const offers = props.offers || [];
   const reduced = useReducedMotion();
 
   // Spotlight: the biggest discounts that have an image, one per merchant.
