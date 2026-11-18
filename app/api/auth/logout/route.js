@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { AUTH_COOKIE_NAME } from '@/lib/api';
 
 export async function POST() {
   const response = NextResponse.json({
@@ -6,9 +7,10 @@ export async function POST() {
     message: 'Logged out successfully',
   });
 
-  response.cookies.set('grabdeal_token', '', {
+  // Same attributes as /api/auth/login so the browser replaces the cookie.
+  response.cookies.set(AUTH_COOKIE_NAME, '', {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: 0,

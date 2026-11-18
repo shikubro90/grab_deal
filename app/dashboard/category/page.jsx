@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 
 export default function CategoryPage() {
   const [uploading, setUploading] = useState(false);
@@ -69,7 +70,7 @@ export default function CategoryPage() {
         const imageData = new FormData();
         imageData.append('image', file);
 
-        const res = await fetch('https://grabdeal-server.vercel.app/api/v1/upload', {
+        const res = await adminFetch('/upload', {
           method: 'POST',
           body: imageData,
         });
@@ -118,7 +119,6 @@ export default function CategoryPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
@@ -149,7 +149,7 @@ export default function CategoryPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/categories', {
+      const res = await adminFetch('/categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -201,14 +201,13 @@ export default function CategoryPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Category Management
         </h1>
 
@@ -220,9 +219,9 @@ export default function CategoryPage() {
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+          className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
         >
-          <h2 className="mb-6 text-2xl font-black text-purple-700">
+          <h2 className="mb-6 text-2xl font-black text-primary">
             Add New Category
           </h2>
 
@@ -238,7 +237,7 @@ export default function CategoryPage() {
                 onChange={handleChange}
                 type="text"
                 placeholder="Clothing"
-                className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
               />
             </div>
 
@@ -252,7 +251,7 @@ export default function CategoryPage() {
                 accept="image/*"
                 multiple
                 onChange={handleImageUpload}
-                className="w-full rounded-xl border border-purple-100 px-4 py-3"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
               />
 
               <p className="mt-2 text-xs text-gray-500">
@@ -260,7 +259,7 @@ export default function CategoryPage() {
               </p>
 
               {uploading && (
-                <p className="mt-2 text-sm font-bold text-purple-600">
+                <p className="mt-2 text-sm font-bold text-primary">
                   Uploading image...
                 </p>
               )}
@@ -271,7 +270,7 @@ export default function CategoryPage() {
                 {formData.imageURLs.map((url, index) => (
                   <div
                     key={url}
-                    className="relative rounded-2xl border border-purple-100 bg-gray-50 p-2"
+                    className="relative rounded-2xl border border-primary/10 bg-gray-50 p-2"
                   >
                     <img
                       src={url}
@@ -300,7 +299,7 @@ export default function CategoryPage() {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -310,19 +309,19 @@ export default function CategoryPage() {
             <button
               disabled={uploading || submitting}
               type="submit"
-              className="rounded-xl bg-purple-700 px-8 py-3 font-bold text-white transition hover:bg-purple-800 disabled:opacity-50"
+              className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white transition hover:bg-primary disabled:opacity-50"
             >
               {submitting ? 'Saving...' : 'Save Category'}
             </button>
           </div>
         </form>
 
-        <div className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
-          <h2 className="mb-6 text-2xl font-black text-purple-700">
+        <div className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
+          <h2 className="mb-6 text-2xl font-black text-primary">
             Live Preview
           </h2>
 
-          <div className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-sm">
             <div className="h-56 bg-gray-50">
               {formData.imageURLs[0] ? (
                 <img
@@ -338,7 +337,7 @@ export default function CategoryPage() {
             </div>
 
             <div className="p-5">
-              <h3 className="text-2xl font-black text-[#16013d]">
+              <h3 className="text-2xl font-black text-foreground">
                 {formData.title || 'Category Title'}
               </h3>
 
@@ -354,10 +353,10 @@ export default function CategoryPage() {
             </div>
           </div>
 
-         {/*  <div className="mt-6 rounded-2xl bg-purple-50 p-5">
-            <h3 className="font-black text-purple-700">API Endpoint</h3>
+         {/*  <div className="mt-6 rounded-2xl bg-primary/5 p-5">
+            <h3 className="font-black text-primary">API Endpoint</h3>
             <p className="mt-2 text-sm text-gray-600">
-              POST: https://grabdeal-server.vercel.app/api/v1/categories
+              POST: /categories
             </p>
           </div> */}
         </div>

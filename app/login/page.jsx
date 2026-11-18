@@ -23,13 +23,16 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/user/login', {
+      // Same-origin route: it calls the backend and sets the token as an
+      // HttpOnly cookie, so the token is never readable from JavaScript.
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         setLoading(false);
@@ -37,7 +40,9 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem('grabdeal_user', JSON.stringify(data.user));
+      try {
+        if (data?.user) localStorage.setItem('grabdeal_user', JSON.stringify(data.user));
+      } catch {}
 
       Swal.fire({
         icon: 'success',
@@ -46,9 +51,9 @@ export default function LoginPage() {
         timer: 1200,
         showConfirmButton: false,
       });
-      document.cookie = `grabdeal_token=${data.token}; path=/; max-age=86400`;
       setLoading(false);
-      router.push('/dashboard');
+      router.replace('/dashboard');
+      router.refresh();
     } catch (error) {
       setLoading(false);
       Swal.fire('Server Error', 'Something went wrong', 'error');
@@ -56,10 +61,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f7f5ff] px-4">
-      <div className="w-full max-w-md rounded-3xl border border-purple-100 bg-white p-8 shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-muted px-4">
+      <div className="w-full max-w-md rounded-3xl border border-primary/10 bg-white p-5 shadow-xl sm:p-8">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-black text-[#16013d]">GrabDeal</h1>
+          <h1 className="text-2xl font-black text-foreground sm:text-4xl">GrabDeal</h1>
           <p className="mt-2 text-gray-500">Admin Dashboard Login</p>
         </div>
 
@@ -73,7 +78,7 @@ export default function LoginPage() {
               value={formData.email}
               onChange={handleChange}
               placeholder="admin@grabdeal.com"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-600"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary"
             />
           </div>
 
@@ -86,14 +91,14 @@ export default function LoginPage() {
               value={formData.password}
               onChange={handleChange}
               placeholder="********"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-600"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary"
             />
           </div>
 
           <button
             disabled={loading}
             type="submit"
-            className="w-full rounded-xl bg-purple-700 py-3 font-bold text-white hover:bg-purple-800 disabled:opacity-50"
+            className="min-h-11 w-full rounded-xl bg-primary py-3 font-bold text-white hover:bg-primary disabled:opacity-50"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>

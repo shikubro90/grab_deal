@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function OfferActions({ offer }) {
   const [wishlist, setWishlist] = useState([]);
   const [showBox, setShowBox] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('grabdeal_wishlist');
-    if (saved) {
-      setWishlist(JSON.parse(saved));
-    }
+    try {
+      const saved = localStorage.getItem('grabdeal_wishlist');
+      if (saved) setWishlist(JSON.parse(saved));
+    } catch {}
   }, []);
 
   const handleShare = async () => {
@@ -22,11 +23,15 @@ export default function OfferActions({ offer }) {
       url: shareUrl,
     };
 
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(shareUrl);
-      alert('Offer link copied!');
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert('Offer link copied!');
+      }
+    } catch {
+      /* user cancelled */
     }
   };
 
@@ -59,43 +64,23 @@ export default function OfferActions({ offer }) {
     setShowBox(true);
   };
 
-  const handleReport = () => {
-    const message = `
-Hello GrabDeal Team,
-
-I want to report this offer:
-
-Title: ${offer?.title}
-Merchant: ${offer?.merchant || offer?.brand}
-Discount: ${offer?.discount}
-Category: ${offer?.category}
-Offer Link: ${window.location.href}
-`;
-
-    const phone = '88000000000';
-    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-    window.open(whatsappUrl, '_blank');
-  };
-
   return (
     <>
-      <div className="flex justify-center gap-10 mt-6 text-sm">
+      <div className="flex justify-center gap-10 mt-6 text-sm text-muted-foreground">
         <button onClick={handleShare}>↗ Share</button>
         <button onClick={handleWishlist}>♡ Wishlist</button>
-        <button onClick={handleReport}>⚠ Report</button>
       </div>
 
       {showBox && (
-        <div className="fixed right-5 top-24 z-50 w-80 rounded-3xl border border-purple-100 bg-white p-5 shadow-2xl">
+        <div className="fixed right-5 top-24 z-50 w-80 rounded-3xl border border-border bg-card p-5 shadow-2xl">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-black text-[#16013d]">
+            <h3 className="text-lg font-black text-card-foreground">
               Wishlist
             </h3>
 
             <button
               onClick={() => setShowBox(false)}
-              className="rounded-full bg-purple-50 px-3 py-1 font-bold text-purple-700"
+              className="rounded-full bg-muted px-3 py-1 font-bold text-primary"
             >
               ✕
             </button>
@@ -105,19 +90,21 @@ Offer Link: ${window.location.href}
             {wishlist.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-3 rounded-2xl bg-purple-50 p-3"
+                className="flex gap-3 rounded-2xl bg-muted p-3"
               >
-                <img
+                <Image
                   src={item.image}
-                  alt={item.title}
+                  alt={item.title || 'Wishlist item'}
+                  width={56}
+                  height={56}
                   className="h-14 w-14 rounded-xl object-cover"
                 />
 
                 <div>
-                  <p className="text-sm font-bold text-[#16013d]">
+                  <p className="text-sm font-bold text-card-foreground">
                     {item.title}
                   </p>
-                  <p className="text-xs text-purple-700">
+                  <p className="text-xs text-primary">
                     {item.discount}
                   </p>
                   <p className="text-xs text-gray-500">

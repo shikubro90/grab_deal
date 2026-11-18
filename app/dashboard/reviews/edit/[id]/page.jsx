@@ -3,10 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 import { uploadToCloudinary } from '@/lib/uploadToCloudinary';
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
 
 export default function EditReviewPage() {
   const { id } = useParams();
@@ -33,7 +31,7 @@ export default function EditReviewPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/reviews/${id}`);
+      const res = await adminFetch(`/reviews/${id}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -56,7 +54,6 @@ export default function EditReviewPage() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('Review fetch error:', error);
       Swal.fire('Server Error', 'Review load failed', 'error');
     }
   };
@@ -143,7 +140,7 @@ export default function EditReviewPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`${API_URL}/reviews/${id}`, {
+      const res = await adminFetch(`/reviews/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -177,8 +174,8 @@ export default function EditReviewPage() {
 
   if (loading) {
     return (
-      <div className="rounded-3xl bg-white p-8 shadow-sm">
-        <p className="font-bold text-purple-700">Loading review...</p>
+      <div className="rounded-3xl bg-white p-4 sm:p-8 shadow-sm">
+        <p className="font-bold text-primary">Loading review...</p>
       </div>
     );
   }
@@ -186,7 +183,7 @@ export default function EditReviewPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Edit Review
         </h1>
         <p className="mt-2 text-gray-500">
@@ -196,7 +193,7 @@ export default function EditReviewPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+        className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
       >
         <div className="grid gap-5 md:grid-cols-2">
           <div>
@@ -209,7 +206,7 @@ export default function EditReviewPage() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Rashed Ahmed"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -222,7 +219,7 @@ export default function EditReviewPage() {
               value={formData.role}
               onChange={handleChange}
               placeholder="Regular Shopper"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -234,7 +231,7 @@ export default function EditReviewPage() {
               name="rating"
               value={formData.rating}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="5">5 Stars</option>
               <option value="4">4 Stars</option>
@@ -252,7 +249,7 @@ export default function EditReviewPage() {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -268,11 +265,11 @@ export default function EditReviewPage() {
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
 
             {uploading && (
-              <p className="mt-2 text-sm font-bold text-purple-600">
+              <p className="mt-2 text-sm font-bold text-primary">
                 Uploading...
               </p>
             )}
@@ -288,7 +285,7 @@ export default function EditReviewPage() {
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="rounded-xl bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
+                  className="min-h-11 inline-flex items-center justify-center rounded-xl bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
                 >
                   Remove
                 </button>
@@ -309,7 +306,7 @@ export default function EditReviewPage() {
               value={formData.comment}
               onChange={handleChange}
               placeholder="Write customer feedback..."
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
 
             <p className="mt-1 text-xs text-gray-500">
@@ -318,11 +315,11 @@ export default function EditReviewPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button
             type="submit"
             disabled={uploading || submitting}
-            className="rounded-xl bg-purple-700 px-8 py-3 font-bold text-white disabled:opacity-50"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white disabled:opacity-50"
           >
             {submitting ? 'Updating...' : 'Update Review'}
           </button>
@@ -330,7 +327,7 @@ export default function EditReviewPage() {
           <button
             type="button"
             onClick={() => router.push('/dashboard/reviews')}
-            className="rounded-xl border border-purple-200 px-8 py-3 font-bold text-purple-700"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl border border-primary/20 px-8 py-3 font-bold text-primary"
           >
             Cancel
           </button>

@@ -3,19 +3,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 
 export default function ViewOffersPage() {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log("offer",offers)
   
 
   const fetchOffers = async () => {
     try {
       setLoading(true);
 
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/offers', {
+      const res = await adminFetch('/offers', {
         cache: 'no-store',
       });
 
@@ -33,7 +33,6 @@ export default function ViewOffersPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
@@ -56,7 +55,7 @@ export default function ViewOffersPage() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/offers/${id}`, {
+      const res = await adminFetch(`/offers/${id}`, {
         method: 'DELETE',
       });
 
@@ -89,7 +88,6 @@ export default function ViewOffersPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
@@ -97,7 +95,7 @@ export default function ViewOffersPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-4xl font-black text-[#16013d]">
+          <h1 className="text-2xl font-black text-foreground sm:text-4xl">
             All Offers
           </h1>
           <p className="mt-2 text-gray-500">
@@ -107,17 +105,17 @@ export default function ViewOffersPage() {
 
         <Link
           href="/dashboard/offers"
-          className="rounded-xl bg-purple-700 px-6 py-3 text-center font-bold text-white hover:bg-purple-800"
+          className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-6 py-3 text-center font-bold text-white hover:bg-primary"
         >
           + Add New Offer
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] border-collapse">
             <thead>
-              <tr className="bg-purple-50 text-left text-sm text-purple-900">
+              <tr className="bg-primary/5 text-left text-sm text-primary">
                 <th className="px-5 py-4 font-black">Image</th>
                 <th className="px-5 py-4 font-black">Title</th>
                 <th className="px-5 py-4 font-black">Merchant</th>
@@ -153,7 +151,7 @@ export default function ViewOffersPage() {
                 offers.map((offer) => (
                   <tr
                     key={offer._id}
-                    className="border-t border-purple-100 text-sm hover:bg-purple-50/40"
+                    className="border-t border-primary/10 text-sm hover:bg-primary/5"
                   >
                     <td className="px-5 py-4">
                       <img
@@ -164,7 +162,7 @@ export default function ViewOffersPage() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-black text-[#16013d]">
+                      <p className="font-black text-foreground">
                         {offer.title}
                       </p>
                       <p className="text-xs text-gray-500">
@@ -185,7 +183,7 @@ export default function ViewOffersPage() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-black text-purple-700">
+                      <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black text-primary">
                         {offer.discount}% OFF
                       </span>
                     </td>
@@ -236,21 +234,21 @@ export default function ViewOffersPage() {
                       <div className="flex justify-end gap-2">
                         <Link
                           href={`/offers/${offer._id}`}
-                          className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 hover:bg-blue-100"
+                          className="min-h-11 inline-flex items-center justify-center rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 hover:bg-blue-100"
                         >
                           View
                         </Link>
 
                         <Link
                           href={`/dashboard/offers/edit/${offer._id}`}
-                          className="rounded-lg bg-purple-50 px-3 py-2 text-xs font-bold text-purple-700 hover:bg-purple-100"
+                          className="min-h-11 inline-flex items-center justify-center rounded-lg bg-primary/5 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/10"
                         >
                           Edit
                         </Link>
 
                         <button
                           onClick={() => handleDelete(offer._id)}
-                          className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100"
+                          className="min-h-11 inline-flex items-center justify-center rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100"
                         >
                           Delete
                         </button>

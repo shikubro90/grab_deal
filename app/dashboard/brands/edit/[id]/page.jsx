@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 import { uploadToCloudinary } from '../../../../../lib/uploadToCloudinary';
 
 export default function EditBrandPage() {
@@ -22,7 +23,7 @@ export default function EditBrandPage() {
   useEffect(() => {
     const fetchBrand = async () => {
       try {
-        const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/brands/${id}`, {
+        const res = await adminFetch(`/brands/${id}`, {
           cache: 'no-store',
         });
 
@@ -56,7 +57,6 @@ export default function EditBrandPage() {
           confirmButtonColor: '#7b00ff',
         });
 
-        console.log(error);
       }
     };
 
@@ -137,7 +137,6 @@ export default function EditBrandPage() {
       });
     } catch (error) {
       setUploading(false);
-      console.log(error);
       Swal.fire('Upload Error', 'Server upload failed', 'error');
     }
   };
@@ -168,7 +167,7 @@ export default function EditBrandPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/brands/${id}`, {
+      const res = await adminFetch(`/brands/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -214,13 +213,12 @@ export default function EditBrandPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
   if (loading) {
     return (
-      <div className="rounded-3xl bg-white p-8 text-center text-gray-500">
+      <div className="rounded-3xl bg-white p-4 sm:p-8 text-center text-gray-500">
         Loading brand data...
       </div>
     );
@@ -229,7 +227,7 @@ export default function EditBrandPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Edit Brand
         </h1>
 
@@ -241,9 +239,9 @@ export default function EditBrandPage() {
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+          className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
         >
-          <h2 className="mb-6 text-2xl font-black text-purple-700">
+          <h2 className="mb-6 text-2xl font-black text-primary">
             Update Brand
           </h2>
 
@@ -259,7 +257,7 @@ export default function EditBrandPage() {
                 onChange={handleChange}
                 type="text"
                 placeholder="Daraz"
-                className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
               />
             </div>
 
@@ -272,7 +270,7 @@ export default function EditBrandPage() {
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="w-full rounded-xl border border-purple-100 px-4 py-3"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
               />
 
               <p className="mt-2 text-xs text-gray-500">
@@ -280,7 +278,7 @@ export default function EditBrandPage() {
               </p>
 
               {uploading && (
-                <p className="mt-2 text-sm font-bold text-purple-600">
+                <p className="mt-2 text-sm font-bold text-primary">
                   Uploading image...
                 </p>
               )}
@@ -295,7 +293,7 @@ export default function EditBrandPage() {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -305,20 +303,20 @@ export default function EditBrandPage() {
             <button
               disabled={uploading || submitting}
               type="submit"
-              className="rounded-xl bg-purple-700 px-8 py-3 font-bold text-white transition hover:bg-purple-800 disabled:opacity-50"
+              className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white transition hover:bg-primary disabled:opacity-50"
             >
               {submitting ? 'Updating...' : 'Update Brand'}
             </button>
           </div>
         </form>
 
-        <div className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
-          <h2 className="mb-6 text-2xl font-black text-purple-700">
+        <div className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
+          <h2 className="mb-6 text-2xl font-black text-primary">
             Live Preview
           </h2>
 
-          <div className="rounded-3xl border border-purple-100 bg-white p-6 text-center shadow-sm">
-            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-3xl bg-purple-50 p-5">
+          <div className="rounded-3xl border border-primary/10 bg-white p-6 text-center shadow-sm">
+            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-3xl bg-primary/5 p-5">
               {formData.image ? (
                 <img
                   src={formData.image}
@@ -330,7 +328,7 @@ export default function EditBrandPage() {
               )}
             </div>
 
-            <h3 className="mt-5 text-2xl font-black text-[#16013d]">
+            <h3 className="mt-5 text-2xl font-black text-foreground">
               {formData.name || 'Brand Name'}
             </h3>
 

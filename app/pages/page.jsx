@@ -55,6 +55,8 @@ function runSelfTests() {
 
 if (typeof window !== 'undefined') runSelfTests();
 
+const navHref = (item) => (item === 'All' ? '/offer' : `/offer?category=${item.toLowerCase()}`);
+
 function MenuIcon() {
   return <span className="block text-2xl leading-none">☰</span>;
 }
@@ -65,10 +67,10 @@ function CloseIcon() {
 
 function OfferCard({ offer }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-purple-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+    <article className="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="relative h-48 overflow-hidden bg-gray-50">
         <img src={offer.image} alt={offer.brand} className="h-full w-full object-cover transition duration-500 hover:scale-110" />
-        <div className="absolute right-3 top-3 rounded-full bg-purple-700 px-3 py-1 text-xs font-bold text-white">{offer.discount}</div>
+        <div className="absolute right-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-white">{offer.discount}</div>
       </div>
       <div className="p-5">
         <h3 className="text-xl font-black">{offer.brand}</h3>
@@ -78,9 +80,9 @@ function OfferCard({ offer }) {
           <span className="text-green-600">✓ Verified</span>
           <span className={offer.online ? 'text-green-600' : 'text-orange-500'}>● {offer.online ? 'Online' : 'Offline'}</span>
         </div>
-        <div className="mt-5 flex items-center justify-between border-t border-purple-100 pt-4">
-          <a className="text-sm font-bold text-purple-700" href="#details">Details</a>
-          <a className="rounded-lg bg-purple-700 px-5 py-2 text-sm font-bold text-white" href="#offer">View Offer</a>
+        <div className="mt-5 flex items-center justify-between border-t border-primary/10 pt-4">
+          <a className="text-sm font-bold text-primary" href={`/offer?brand=${encodeURIComponent(offer.brand)}`}>Details</a>
+          <a className="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white" href={`/offer?brand=${encodeURIComponent(offer.brand)}`}>View Offer</a>
         </div>
       </div>
     </article>
@@ -98,36 +100,36 @@ export default function GrabDealHomePage() {
 
   return (
     <main className="min-h-screen bg-white text-[#16013d]">
-      <header className="sticky top-0 z-50 border-b border-purple-100 bg-white/90 shadow-sm backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-primary/10 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="group flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-orange-400 text-white shadow-lg transition group-hover:scale-105">🛍</div>
-              <h1 className="text-xl font-extrabold tracking-tight text-purple-700 sm:text-2xl">GrabDeal</h1>
+              <h1 className="text-xl font-extrabold tracking-tight text-primary sm:text-2xl">GrabDeal</h1>
             </a>
 
             <nav className="hidden items-center gap-10 text-sm font-bold lg:flex">
               <div className="group relative">
-                <button className="rounded-xl bg-purple-50 px-5 py-3 text-purple-700">All⌄</button>
-                <div className="invisible absolute left-0 top-12 w-52 rounded-2xl border border-purple-100 bg-white p-3 opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100">
-                  {navItems.map((item) => <a key={item} className="block rounded-xl px-4 py-3 hover:bg-purple-50" href={`#${item.toLowerCase()}`}>{item}</a>)}
+                <button className="rounded-xl bg-primary/5 px-5 py-3 text-primary">All⌄</button>
+                <div className="invisible absolute left-0 top-12 w-52 rounded-2xl border border-primary/10 bg-white p-3 opacity-0 shadow-xl transition-all group-hover:visible group-hover:opacity-100">
+                  {navItems.map((item) => <a key={item} className="block rounded-xl px-4 py-3 hover:bg-primary/5" href={navHref(item)}>{item}</a>)}
                 </div>
               </div>
-              {navItems.slice(1).map((item) => <a key={item} className="hover:text-purple-700" href={`#${item.toLowerCase()}`}>{item}</a>)}
+              {navItems.slice(1).map((item) => <a key={item} className="hover:text-primary" href={navHref(item)}>{item}</a>)}
             </nav>
 
             <div className="flex items-center gap-2">
-              <a className="hidden rounded-xl px-4 py-2 text-sm font-bold text-purple-800 hover:bg-purple-50 sm:inline-flex" href="https://wa.me/880000000000">💬 WhatsApp</a>
-              <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2 text-purple-800 transition hover:bg-purple-50 lg:hidden" aria-label="Toggle menu">
+              <a className="hidden rounded-xl px-4 py-2 text-sm font-bold text-primary hover:bg-primary/5 sm:inline-flex" href="https://wa.me/880000000000">💬 WhatsApp</a>
+              <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl p-2 text-primary transition hover:bg-primary/5 lg:hidden" aria-label="Toggle menu">
                 {menuOpen ? <CloseIcon /> : <MenuIcon />}
               </button>
             </div>
           </div>
 
           {menuOpen && (
-            <div className="border-t border-purple-100 py-4 lg:hidden">
+            <div className="border-t border-primary/10 py-4 lg:hidden">
               <nav className="flex flex-col gap-2 text-sm font-bold">
-                {navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)} className="rounded-xl px-4 py-3 text-[#16013d] transition hover:bg-purple-50 hover:text-purple-700">{item}</a>)}
+                {navItems.map((item) => <a key={item} href={navHref(item)} onClick={() => setMenuOpen(false)} className="rounded-xl px-4 py-3 text-[#16013d] transition hover:bg-primary/5 hover:text-primary">{item}</a>)}
                 <a href="https://wa.me/880000000000" className="mt-2 rounded-xl bg-green-50 px-4 py-3 font-extrabold text-green-600">💬 WhatsApp</a>
               </nav>
             </div>
@@ -143,10 +145,10 @@ export default function GrabDealHomePage() {
             <span className="mb-5 w-fit rounded-full bg-white/20 px-5 py-2 text-sm font-extrabold backdrop-blur-md">{currentSlide.discount}</span>
             <h2 className="text-4xl font-black leading-tight md:text-7xl">{currentSlide.title}</h2>
             <p className="mt-5 max-w-xl text-base text-white/90 md:text-xl">{currentSlide.subtitle}</p>
-            <a href="#today" className="mt-8 w-fit rounded-2xl bg-white px-7 py-4 font-bold text-purple-700 shadow-xl transition hover:scale-105">Explore Offers →</a>
+            <a href="#today" className="mt-8 w-fit rounded-2xl bg-white px-7 py-4 font-bold text-primary shadow-xl transition hover:scale-105">Explore Offers →</a>
           </div>
-          <button onClick={prevSlide} className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl font-black text-purple-700 shadow-xl md:left-6">‹</button>
-          <button onClick={nextSlide} className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl font-black text-purple-700 shadow-xl md:right-6">›</button>
+          <button onClick={prevSlide} className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl font-black text-primary shadow-xl md:left-6">‹</button>
+          <button onClick={nextSlide} className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-4 py-3 text-2xl font-black text-primary shadow-xl md:right-6">›</button>
           <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
             {sliders.map((slide, index) => <button key={slide.title} onClick={() => setActiveSlide(index)} className={index === activeSlide ? 'h-3 w-10 rounded-full bg-white' : 'h-3 w-3 rounded-full bg-white/60'} aria-label={`Go to slide ${index + 1}`} />)}
           </div>
@@ -156,7 +158,7 @@ export default function GrabDealHomePage() {
       <section id="today" className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-extrabold">Today’s Offer</h2>
-          <a className="text-sm font-bold text-purple-700" href="#all">View All →</a>
+          <a className="text-sm font-bold text-primary" href="/offer">View All →</a>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">{offers.map((offer) => <OfferCard key={offer.brand} offer={offer} />)}</div>
       </section>
@@ -164,11 +166,11 @@ export default function GrabDealHomePage() {
       <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
         <div className="mb-5 flex items-end justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-purple-600">Freshly Added</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-primary">Freshly Added</p>
             <h2 className="text-3xl font-extrabold">New Today</h2>
             {/* <p className="mt-1 text-gray-500">আজকে নতুন যোগ হওয়া discount information — coupon code ছাড়াই brand discount, expiry ও offer type দেখা যাবে।</p> */}
           </div>
-          <a className="hidden text-sm font-bold text-purple-700 md:block" href="#all">View All →</a>
+          <a className="hidden text-sm font-bold text-primary md:block" href="/offer">View All →</a>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {newToday.map((offer) => <OfferCard key={offer.brand} offer={offer} />)}
@@ -178,15 +180,15 @@ export default function GrabDealHomePage() {
       <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-purple-600">Trusted Brands</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-primary">Trusted Brands</p>
             <h2 className="text-3xl font-extrabold">Top Stores</h2>
           </div>
-          <a className="text-sm font-bold text-purple-700" href="#all">View All →</a>
+          <a className="text-sm font-bold text-primary" href="/offer">View All →</a>
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
           {stores.map((store) => (
-            <a key={store.name} href="#store" className="group relative overflow-hidden rounded-3xl border border-purple-100 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-transparent to-pink-50 opacity-0 transition-opacity group-hover:opacity-100" />
+            <a key={store.name} href={`/offer?brand=${encodeURIComponent(store.name)}`} className="group relative overflow-hidden rounded-3xl border border-primary/10 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-pink-50 opacity-0 transition-opacity group-hover:opacity-100" />
               <div className="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-white p-3 shadow-md">
                 <img src={store.logo} alt={store.name} className="max-h-12 object-contain transition duration-300 group-hover:scale-110" />
               </div>
@@ -200,15 +202,15 @@ export default function GrabDealHomePage() {
       <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
         <div className="mb-5 flex items-end justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-purple-600">Most Useful Deals</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-primary">Most Useful Deals</p>
             <h2 className="text-3xl font-extrabold">Popular Offers of the Day</h2>
             {/* <p className="mt-1 text-gray-500">User এখানে দেখে বুঝবে কোন shop-এ currently discount চলছে.</p> */}
           </div>
-          <a className="hidden text-sm font-bold text-purple-700 md:block" href="#all">View All →</a>
+          <a className="hidden text-sm font-bold text-primary md:block" href="/offer">View All →</a>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {offers.slice(0, 3).map((offer) => (
-            <div key={offer.brand} className="flex gap-4 rounded-3xl border border-purple-100 bg-white p-4 shadow-sm transition hover:shadow-xl">
+            <div key={offer.brand} className="flex gap-4 rounded-3xl border border-primary/10 bg-white p-4 shadow-sm transition hover:shadow-xl">
               <img src={offer.image} alt={offer.brand} className="h-28 w-28 rounded-2xl object-cover" />
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-3">
@@ -218,7 +220,7 @@ export default function GrabDealHomePage() {
                 <p className="mt-3 text-xs font-bold text-red-500">⏱ {offer.ends}</p>
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-xs font-bold text-green-600">✓ Verified</span>
-                  <a className="rounded-lg bg-purple-700 px-4 py-2 text-xs font-bold text-white" href="#info">Get Info</a>
+                  <a className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white" href={`/offer?brand=${encodeURIComponent(offer.brand)}`}>Get Info</a>
                 </div>
               </div>
             </div>
@@ -233,7 +235,7 @@ export default function GrabDealHomePage() {
               <p className="text-sm font-bold uppercase tracking-wider text-orange-300">Expire within 2 days</p>
               <h2 className="text-3xl font-extrabold">Ending Soon</h2>
             </div>
-            <a className="text-sm font-bold text-white" href="#all">View All →</a>
+            <a className="text-sm font-bold text-white" href="/offer">View All →</a>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {endingOffers.map((offer) => (
@@ -244,7 +246,7 @@ export default function GrabDealHomePage() {
                 </div>
                 <p className="text-sm text-gray-500">{offer.title}</p>
                 <p className="mt-4 text-sm font-black text-red-500">⏱ {offer.ends}</p>
-                <a href="#details" className="mt-4 block rounded-xl border border-purple-200 py-2 text-center text-sm font-bold text-purple-700">View Details</a>
+                <a href={`/offer?brand=${encodeURIComponent(offer.brand)}`} className="mt-4 block rounded-xl border border-primary/20 py-2 text-center text-sm font-bold text-primary">View Details</a>
               </div>
             ))}
           </div>
@@ -253,13 +255,13 @@ export default function GrabDealHomePage() {
 
       <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
         <div className="mb-5">
-          <p className="text-sm font-bold uppercase tracking-wider text-purple-600">Real Users</p>
+          <p className="text-sm font-bold uppercase tracking-wider text-primary">Real Users</p>
           <h2 className="text-3xl font-extrabold">Our Customers’ Feedback</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           {['Rashed Ahmed', 'Farzana Mim', 'Tanvir Hasan'].map((name) => (
-            <div key={name} className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 font-black text-purple-700">{name[0]}</div>
+            <div key={name} className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 font-black text-primary">{name[0]}</div>
               <p className="text-yellow-500">★★★★★</p>
               <p className="mt-3 text-sm leading-6 text-gray-600">GrabDeal থেকে discount information দেখে shop link এ গিয়ে purchase করেছি। Information clear ছিল।</p>
               <p className="mt-4 text-sm font-black">— {name}</p>
@@ -269,14 +271,14 @@ export default function GrabDealHomePage() {
       </section>
 
       <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
-        <div className="grid gap-8 rounded-3xl bg-purple-50 p-6 lg:grid-cols-[0.8fr_1.2fr] lg:p-8">
+        <div className="grid gap-8 rounded-3xl bg-primary/5 p-6 lg:grid-cols-[0.8fr_1.2fr] lg:p-8">
           <div>
-            <p className="text-sm font-bold uppercase tracking-wider text-purple-600">Need Help?</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-primary">Need Help?</p>
             <h2 className="mt-2 text-3xl font-extrabold">Frequently Asked Questions</h2>
             <p className="mt-3 text-gray-600">GrabDeal কোনো product sell করে না। আমরা শুধু কোথায় discount চলছে, details এবং shop link দেখাই।</p>
           </div>
           <div className="space-y-3">
-            {faqs.map((q) => <div key={q} className="flex justify-between rounded-2xl bg-white p-5 font-bold shadow-sm"><span>{q}</span><span className="text-purple-700">+</span></div>)}
+            {faqs.map((q) => <div key={q} className="flex justify-between rounded-2xl bg-white p-5 font-bold shadow-sm"><span>{q}</span><span className="text-primary">+</span></div>)}
           </div>
         </div>
       </section>

@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
+import { adminFetch } from '@/lib/api';
 
 export default function BannersPage() {
   const [banners, setBanners] = useState([]);
@@ -19,7 +17,7 @@ export default function BannersPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/banner`);
+      const res = await adminFetch(`/banner`);
       const data = await res.json();
 
       const result = data?.data?.result || data?.data || data || [];
@@ -28,7 +26,6 @@ export default function BannersPage() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('Banner fetch error:', error);
     }
   };
 
@@ -45,7 +42,7 @@ export default function BannersPage() {
 
     if (!confirm.isConfirmed) return;
 
-    const res = await fetch(`${API_URL}/banner/${id}`, {
+    const res = await adminFetch(`/banner/${id}`, {
       method: 'DELETE',
     });
 
@@ -58,14 +55,14 @@ export default function BannersPage() {
   };
 
   if (loading) {
-    return <p className="font-bold text-purple-700">Loading banners...</p>;
+    return <p className="font-bold text-primary">Loading banners...</p>;
   }
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black text-[#16013d]">
+          <h1 className="text-2xl font-black text-foreground sm:text-4xl">
             Banner Management
           </h1>
           <p className="mt-2 text-gray-500">
@@ -75,15 +72,16 @@ export default function BannersPage() {
 
         <Link
           href="/dashboard/banner/add"
-          className="rounded-xl bg-purple-700 px-6 py-3 font-bold text-white"
+          className="min-h-11 inline-flex items-center justify-center min-h-11 inline-flex items-center rounded-xl bg-primary px-6 py-3 font-bold text-white"
         >
           + Add Banner
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-sm">
-        <table className="w-full text-left">
-          <thead className="bg-purple-50">
+      <div className="overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+<table className="w-full min-w-[720px] text-left">
+          <thead className="bg-primary/5">
             <tr>
               <th className="p-4">Image</th>
               <th className="p-4">Title</th>
@@ -111,7 +109,7 @@ export default function BannersPage() {
                   </p>
                 </td>
 
-                <td className="p-4 font-bold text-purple-700">
+                <td className="p-4 font-bold text-primary">
                   {item.discount || 'N/A'}
                 </td>
 
@@ -131,14 +129,14 @@ export default function BannersPage() {
                   <div className="flex justify-end gap-2">
                     <Link
                       href={`/dashboard/banner/edit/${item._id}`}
-                      className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-bold text-blue-600"
+                      className="min-h-11 inline-flex items-center justify-center rounded-lg bg-blue-50 px-4 py-2 text-sm font-bold text-blue-600"
                     >
                       Edit
                     </Link>
 
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="rounded-lg bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
+                      className="min-h-11 inline-flex items-center justify-center rounded-lg bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
                     >
                       Delete
                     </button>
@@ -156,6 +154,7 @@ export default function BannersPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 import Header from "@/components/layout/Header";
 import HeroSlider from "@/components/home/HeroSlider";
-import TodaysOffer from "@/components/home/TodaysOffer";
-import NewToday from "@/components/home/NewToday";
-import TopStores from "@/components/home/TopStores";
 import PopularOffers from "@/components/home/PopularOffers";
-import EndingSoon from "@/components/home/EndingSoon";
+import PopularStores from "@/components/home/PopularStores";
+import TopCoupons from "@/components/home/TopCoupons";
+import DealsOfTheDay from "@/components/home/DealsOfTheDay";
+import NewToday from "@/components/home/NewToday";
 import CustomerFeedback from "@/components/home/CustomerFeedback";
 import FAQ from "@/components/home/FAQ";
 import Footer from "@/components/layout/Footer";
@@ -16,11 +16,11 @@ export default function HomePage() {
 
       <main>
         <HeroSlider />
-        <TodaysOffer />
-        <NewToday />
-        <TopStores />
         <PopularOffers />
-        <EndingSoon />
+        <PopularStores />
+        <TopCoupons />
+        <DealsOfTheDay />
+        <NewToday />
         <CustomerFeedback />
         <FAQ />
       </main>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { uploadToCloudinary } from "../../../../../lib/uploadToCloudinary";
 
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 
 export default function EditOfferPage() {
   const { id } = useParams();
@@ -51,7 +52,7 @@ export default function EditOfferPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/offers/${id}`);
+      const res = await adminFetch(`/offers/${id}`);
       const data = await res.json();
 
       const offer = data?.data || data?.data?.result || data;
@@ -76,27 +77,24 @@ export default function EditOfferPage() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('Offer fetch error:', error);
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/categories');
+      const res = await adminFetch('/categories');
       const data = await res.json();
       setCategories(data?.data?.result || data || []);
     } catch (error) {
-      console.log('Category fetch error:', error);
     }
   };
 
   const fetchBrands = async () => {
     try {
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/brands');
+      const res = await adminFetch('/brands');
       const data = await res.json();
       setBrands(data?.data?.result || data || []);
     } catch (error) {
-      console.log('Brand fetch error:', error);
     }
   };
 
@@ -158,7 +156,6 @@ export default function EditOfferPage() {
       });
     } catch (error) {
       setUploading(false);
-      console.log(error);
       Swal.fire('Upload Error', 'Server upload failed', 'error');
     }
   };
@@ -186,7 +183,7 @@ export default function EditOfferPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/offers/${id}`, {
+      const res = await adminFetch(`/offers/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -214,30 +211,29 @@ export default function EditOfferPage() {
     //   router.push('/dashboard/offers');
     } catch (error) {
       setSubmitting(false);
-      console.log('Offer update error:', error);
     }
   };
 
   if (loading) {
-    return <p className="p-6 text-lg font-bold text-purple-700">Loading offer...</p>;
+    return <p className="p-6 text-lg font-bold text-primary">Loading offer...</p>;
   }
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">Edit Offer</h1>
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">Edit Offer</h1>
         <p className="mt-2 text-gray-500">
           Update offer information, image, category and brand.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
         <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-bold">Offer Image</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input type="file" accept="image/*" onChange={handleImageUpload} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
 
-            {uploading && <p className="mt-2 text-sm text-purple-600">Uploading...</p>}
+            {uploading && <p className="mt-2 text-sm text-primary">Uploading...</p>}
 
             {formData.image && (
               <img src={formData.image} alt="preview" className="mt-4 h-40 w-full rounded-xl border object-contain" />
@@ -246,22 +242,22 @@ export default function EditOfferPage() {
 
           <div>
             <label className="mb-2 block text-sm font-bold">Discount %</label>
-            <input name="discount" type="number" min="0" max="100" value={formData.discount} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="discount" type="number" min="0" max="100" value={formData.discount} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-bold">Merchant Name</label>
-            <input name="merchantName" value={formData.merchantName} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="merchantName" value={formData.merchantName} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-bold">Expiry Date & Time</label>
-            <input name="expiryDate" type="datetime-local" value={formData.expiryDate} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="expiryDate" type="datetime-local" value={formData.expiryDate} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-bold">Offer Type</label>
-            <select name="offerType" value={formData.offerType} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3">
+            <select name="offerType" value={formData.offerType} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base">
               <option value="online">Online</option>
               <option value="offline">Offline</option>
             </select>
@@ -269,7 +265,7 @@ export default function EditOfferPage() {
 
           <div>
             <label className="mb-2 block text-sm font-bold">Verified</label>
-            <select value={String(formData.verified)} onChange={(e) => setFormData({ ...formData, verified: e.target.value === 'true' })} className="w-full rounded-xl border border-purple-100 px-4 py-3">
+            <select value={String(formData.verified)} onChange={(e) => setFormData({ ...formData, verified: e.target.value === 'true' })} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -277,7 +273,7 @@ export default function EditOfferPage() {
 
           <div>
             <label className="mb-2 block text-sm font-bold">Category</label>
-            <select name="category" value={formData.category} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3">
+            <select name="category" value={formData.category} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base">
               <option value="">Select Category</option>
               {categories.map((item) => (
                 <option key={item._id || item.title} value={item.title}>
@@ -289,7 +285,7 @@ export default function EditOfferPage() {
 
           <div>
             <label className="mb-2 block text-sm font-bold">Brand</label>
-            <select name="brands" value={formData.brands} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3">
+            <select name="brands" value={formData.brands} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base">
               <option value="">Select Brand</option>
               {brands.map((item) => (
                 <option key={item._id || item.name} value={item.name}>
@@ -301,36 +297,36 @@ export default function EditOfferPage() {
 
           <div>
             <label className="mb-2 block text-sm font-bold">Coupon Code</label>
-            <input name="couponCode" value={formData.couponCode} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="couponCode" value={formData.couponCode} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-bold">Shop Link</label>
-            <input name="shopLink" type="url" value={formData.shopLink} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="shopLink" type="url" value={formData.shopLink} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-bold">Title</label>
-            <input name="title" value={formData.title} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <input name="title" value={formData.title} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-bold">Description</label>
-            <textarea name="description" rows="4" value={formData.description} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <textarea name="description" rows="4" value={formData.description} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
 
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-bold">Terms & Conditions</label>
-            <textarea name="termsAndCondition" rows="6" value={formData.termsAndCondition} onChange={handleChange} className="w-full rounded-xl border border-purple-100 px-4 py-3" />
+            <textarea name="termsAndCondition" rows="6" value={formData.termsAndCondition} onChange={handleChange} className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base" />
           </div>
         </div>
 
         <div className="mt-6 flex items-center gap-3">
-          <input id="status" name="status" type="checkbox" checked={formData.status} onChange={handleChange} className="h-5 w-5 accent-purple-700" />
+          <input id="status" name="status" type="checkbox" checked={formData.status} onChange={handleChange} className="h-5 w-5 accent-primary" />
           <label htmlFor="status" className="font-bold">Publish this offer</label>
         </div>
 
-        <button disabled={uploading || submitting} type="submit" className="mt-8 rounded-xl bg-purple-700 px-8 py-3 font-bold text-white disabled:opacity-50">
+        <button disabled={uploading || submitting} type="submit" className="min-h-11 mt-8 min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white disabled:opacity-50">
           {submitting ? 'Updating...' : 'Update Offer'}
         </button>
       </form>

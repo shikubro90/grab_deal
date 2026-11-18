@@ -1,7 +1,5 @@
 import Link from "next/link";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://grabdeal-server.vercel.app/api/v1";
+import { API_BASE_URL as API_URL } from "@/lib/api";
 
 async function getDashboardData() {
   try {
@@ -53,7 +51,6 @@ async function getDashboardData() {
       endingSoonOffers,
     };
   } catch (error) {
-    console.log("Dashboard fetch error:", error);
 
     return {
       offers: [],
@@ -80,7 +77,7 @@ export default async function DashboardPage() {
   const activeBanners = banners.filter((item) => item.status === "active");
 
   const stats = [
-    { title: "Total Offers", value: offers.length, icon: "🎁", color: "bg-purple-50 text-purple-700" },
+    { title: "Total Offers", value: offers.length, icon: "🎁", color: "bg-primary/5 text-primary" },
     { title: "Active Banners", value: activeBanners.length, icon: "🖼️", color: "bg-blue-50 text-blue-700" },
     { title: "Categories", value: categories.length, icon: "📂", color: "bg-green-50 text-green-700" },
     { title: "Brands", value: brands.length, icon: "🏷️", color: "bg-orange-50 text-orange-700" },
@@ -96,7 +93,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Dashboard Overview
         </h1>
         <p className="mt-2 text-gray-500">
@@ -106,12 +103,12 @@ export default async function DashboardPage() {
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => (
-          <div key={item.title} className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
+          <div key={item.title} className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
             <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${item.color}`}>
               {item.icon}
             </div>
             <p className="text-sm font-bold text-gray-500">{item.title}</p>
-            <h2 className="mt-2 text-4xl font-black text-[#16013d]">
+            <h2 className="mt-2 text-2xl font-black text-foreground sm:text-4xl">
               {item.value}
             </h2>
           </div>
@@ -144,10 +141,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
-        <div className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
+        <div className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-black text-[#16013d]">
+              <h2 className="text-2xl font-black text-foreground">
                 Recent Activity
               </h2>
               <p className="mt-1 text-sm text-gray-500">
@@ -155,7 +152,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <span className="rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-red-600">
+            <span className="min-h-11 inline-flex items-center justify-center rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-red-600">
               {expiredOffers.length} Expired
             </span>
           </div>
@@ -163,14 +160,14 @@ export default async function DashboardPage() {
           <div className="mt-6 space-y-4">
             {expiredOffers.length > 0 ? (
               expiredOffers.map((offer, index) => (
-                <div key={offer._id} className="flex items-center justify-between gap-4 rounded-2xl bg-red-50 p-4">
+                <div key={offer._id} className="flex flex-col gap-3 rounded-2xl bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <div className="flex items-center gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-black text-red-600">
                       {index + 1}
                     </div>
 
                     <div>
-                      <p className="font-bold text-[#16013d]">
+                      <p className="font-bold text-foreground">
                         {offer.title}
                       </p>
                       <p className="text-sm text-gray-500">
@@ -185,7 +182,7 @@ export default async function DashboardPage() {
 
                   <Link
                     href={`/dashboard/offers/edit/${offer._id}`}
-                    className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-red-600"
+                    className="min-h-11 inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-bold text-red-600"
                   >
                     Edit
                   </Link>
@@ -201,8 +198,8 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-black text-[#16013d]">
+        <div className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-black text-foreground">
             Quick Actions
           </h2>
 
@@ -211,7 +208,7 @@ export default async function DashboardPage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="rounded-2xl bg-purple-700 px-5 py-4 text-center font-bold text-white transition hover:bg-purple-800"
+                className="min-h-11 rounded-2xl bg-primary px-5 py-4 text-center font-bold text-white transition hover:bg-primary"
               >
                 {item.title}
               </Link>

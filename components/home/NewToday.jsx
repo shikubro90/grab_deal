@@ -50,13 +50,13 @@ export default async function NewToday() {
     <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
       <div className="mb-5 flex items-end justify-between">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wider text-purple-600">
+          <p className="text-sm font-bold uppercase tracking-wider text-primary">
             Freshly Added
           </p>
           <h2 className="text-3xl font-extrabold">New Today</h2>
         </div>
 
-        <a className="hidden text-sm font-bold text-purple-700 md:block" href="/offer">
+        <a className="hidden text-sm font-bold text-primary md:block" href="/offer">
           View All →
         </a>
       </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { uploadToCloudinary } from "../../../lib/uploadToCloudinary";
 
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 
 export default function OffersPage() {
   const [categories, setCategories] = useState([]);
@@ -12,7 +13,6 @@ export default function OffersPage() {
   const [submitting, setSubmitting] = useState(false);
 
 
-  console.log("brand",categories)
   
 
   const [formData, setFormData] = useState({
@@ -39,21 +39,19 @@ export default function OffersPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/categories');
+      const res = await adminFetch('/categories');
       const data = await res.json();
       setCategories(data?.data.result || data || []);
     } catch (error) {
-      console.log('Category fetch error:', error);
     }
   };
 
   const fetchBrands = async () => {
     try {
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/brands');
+      const res = await adminFetch('/brands');
       const data = await res.json();
       setBrands(data?.data.result || data || []);
     } catch (error) {
-      console.log('Brand fetch error:', error);
     }
   };
 
@@ -121,7 +119,6 @@ export default function OffersPage() {
 
     const result = await uploadToCloudinary(file);
       
-      console.log("image",result)
 
       if (!result.success) {
         setUploading(false);
@@ -145,7 +142,6 @@ export default function OffersPage() {
       });
     } catch (error) {
       setUploading(false);
-      console.log(error);
       Swal.fire('Upload Error', 'Server upload failed', 'error');
     }
   };
@@ -172,7 +168,7 @@ export default function OffersPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/offers', {
+      const res = await adminFetch('/offers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -210,14 +206,13 @@ export default function OffersPage() {
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
-      console.log('Offer create error:', error);
     }
   };
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Offers Management
         </h1>
         <p className="mt-2 text-gray-500">
@@ -227,7 +222,7 @@ export default function OffersPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+        className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
       >
         <div className="grid gap-5 md:grid-cols-2">
           <div>
@@ -236,11 +231,11 @@ export default function OffersPage() {
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="w-full rounded-xl border border-purple-100 px-4 py-3"
+                className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
                 />
 
             {uploading && (
-              <p className="mt-2 text-sm text-purple-600">Uploading...</p>
+              <p className="mt-2 text-sm text-primary">Uploading...</p>
             )}
 
             {formData.image && (
@@ -262,7 +257,7 @@ export default function OffersPage() {
               value={formData.discount}
               onChange={handleChange}
               placeholder="25"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -273,7 +268,7 @@ export default function OffersPage() {
               value={formData.merchantName}
               onChange={handleChange}
               placeholder="Daraz"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -286,7 +281,7 @@ export default function OffersPage() {
               type="datetime-local"
               value={formData.expiryDate}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -296,7 +291,7 @@ export default function OffersPage() {
               name="offerType"
               value={formData.offerType}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="online">Online</option>
               <option value="offline">Offline</option>
@@ -313,7 +308,7 @@ export default function OffersPage() {
                   verified: e.target.value === 'true',
                 })
               }
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="true">Yes</option>
               <option value="false">No</option>
@@ -326,7 +321,7 @@ export default function OffersPage() {
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="">Select Category</option>
               {categories.map((item) => (
@@ -343,7 +338,7 @@ export default function OffersPage() {
               name="brands"
               value={formData.brands}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="">Select Brand</option>
               {brands.map((item) => (
@@ -361,7 +356,7 @@ export default function OffersPage() {
               value={formData.couponCode}
               onChange={handleChange}
               placeholder="Optional"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -373,7 +368,7 @@ export default function OffersPage() {
               value={formData.shopLink}
               onChange={handleChange}
               placeholder="https://shop.com"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -384,7 +379,7 @@ export default function OffersPage() {
               value={formData.title}
               onChange={handleChange}
               placeholder="Stylish Men Shirt"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -396,7 +391,7 @@ export default function OffersPage() {
               value={formData.description}
               onChange={handleChange}
               placeholder="Write offer description"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -410,7 +405,7 @@ export default function OffersPage() {
               value={formData.termsAndCondition}
               onChange={handleChange}
               placeholder="Quill editor HTML/string will be saved here"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
         </div>
@@ -422,7 +417,7 @@ export default function OffersPage() {
             type="checkbox"
             checked={formData.status}
             onChange={handleChange}
-            className="h-5 w-5 accent-purple-700"
+            className="h-5 w-5 accent-primary"
           />
           <label htmlFor="status" className="font-bold">
             Publish this offer
@@ -432,7 +427,7 @@ export default function OffersPage() {
         <button
           disabled={uploading || submitting}
           type="submit"
-          className="mt-8 rounded-xl bg-purple-700 px-8 py-3 font-bold text-white disabled:opacity-50"
+          className="min-h-11 mt-8 min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white disabled:opacity-50"
         >
           {submitting ? 'Saving...' : 'Save Offer'}
         </button>

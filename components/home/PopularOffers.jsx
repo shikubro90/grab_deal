@@ -1,99 +1,44 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://grabdeal-server.vercel.app/api/v1";
+"use client";
 
-async function getPopularOffers() {
-  const res = await fetch(`${API_URL}/offers`, {
-    next: { revalidate: 60 },
-  });
+import Link from "next/link";
+import { useOffers, SectionHeader, Skeletons, EmptyState } from "./useOffers";
 
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  const offers = data?.data?.products || data?.data || data || [];
-
-  return offers
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3)
-    .map((item) => ({
-      id: item._id,
-      title: item.title,
-      brand: item.brands,
-      image: item.image,
-      discount: `${item.discount}% OFF`,
-      ends: item.expiryDate
-        ? new Date(item.expiryDate).toLocaleDateString("en-GB")
-        : "N/A",
-      online: item.offerType === "online",
-      verified: item.verified,
-      category: item.category,
-      merchant: item.merchantName,
-      shopLink: item.shopLink,
-    }));
-}
-
-export default async function PopularOffers() {
-  const newToday = await getPopularOffers();
+export default function PopularOffers() {
+  const { items, loading, error } = useOffers();
+  const offers = [...items]
+    .sort((a, b) => b.discount - a.discount || new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 4);
 
   return (
-    <section className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
-      <div className="mb-5 flex items-end justify-between">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-wider text-purple-600">
-            Most Useful Deals
-          </p>
-          <h2 className="text-3xl font-extrabold">
-            Popular Offers of the Day
-          </h2>
-        </div>
-
-        <a className="hidden text-sm font-bold text-purple-700 md:block" href="#all">
-          View All →
-        </a>
-      </div>
-
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {newToday.map((offer) => (
-          <div
-            key={offer.id}
-            className="flex gap-4 rounded-3xl border border-purple-100 bg-white p-4 shadow-sm transition hover:shadow-xl"
+    <section className="mx-auto mt-8 max-w-7xl sm:mt-12 px-4 lg:px-8">
+      <SectionHeader title="Popular Offers of the Day" href="/offer" />
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {loading && <Skeletons count={4} className="h-40" />}
+        {offers.map((o) => (
+          <Link
+            key={o._id}
+            href={`/offer/${o._id}`}
+            className="group flex flex-col justify-between min-w-0 rounded-xl border border-border bg-card p-3 sm:rounded-2xl sm:p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
           >
-            <img
-              src={offer.image}
-              alt={offer.brand}
-              className="h-28 w-28 rounded-2xl object-cover"
-            />
-
-            <div className="flex-1">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-black">{offer.brand}</h3>
-                  <p className="text-sm text-gray-500">{offer.title}</p>
-                </div>
-
-                <span className="rounded-full bg-pink-50 px-3 py-1 text-xs font-black text-pink-600">
-                  {offer.discount}
-                </span>
-              </div>
-
-              <p className="mt-3 text-xs font-bold text-red-500">
-                ⏱ {offer.ends}
-              </p>
-
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs font-bold text-green-600">
-                  {offer.verified ? "✓ Verified" : "Not Verified"}
-                </span>
-
-                <a
-                  className="rounded-lg bg-purple-700 px-4 py-2 text-xs font-bold text-white"
-                  href={`/offer/${offer.id}`}
-                >
-                  Get Info
-                </a>
-              </div>
+            <div>
+              <span className="inline-block rounded-full bg-muted max-w-full truncate px-2 py-0.5 text-[11px] font-bold text-primary sm:px-3 sm:py-1 sm:text-xs">
+                {o.category || "Offer"}
+              </span>
+              <h3 className="mt-2 line-clamp-2 text-sm font-extrabold sm:mt-3 sm:text-base text-card-foreground">{o.title}</h3>
+              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground sm:text-sm">{o.discount ? `Up to ${o.discount}% OFF` : o.name}</p>
             </div>
-          </div>
+            <span
+              className="mt-3 flex min-h-11 items-center justify-center rounded-lg text-center sm:mt-4 text-sm font-bold text-primary-foreground"
+              style={{ background: "var(--brand-gradient)" }}
+            >
+              Grab Now
+            </span>
+          </Link>
         ))}
       </div>
+      {!loading && offers.length === 0 && (
+        <EmptyState>{error ? "Could not load offers right now." : "No popular offers today."}</EmptyState>
+      )}
     </section>
   );
 }

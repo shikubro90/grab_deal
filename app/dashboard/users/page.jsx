@@ -4,7 +4,7 @@ return(
 
 <div>
 
-<h1 className="text-4xl font-black">
+<h1 className="text-2xl font-black sm:text-4xl">
 
 Users Page
 

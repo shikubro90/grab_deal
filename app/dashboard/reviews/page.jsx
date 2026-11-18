@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
+import { adminFetch } from '@/lib/api';
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
@@ -15,7 +13,7 @@ export default function ReviewsPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/reviews`);
+      const res = await adminFetch(`/reviews`);
       const data = await res.json();
 
       const result =
@@ -29,7 +27,6 @@ export default function ReviewsPage() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('Review fetch error:', error);
     }
   };
 
@@ -50,7 +47,7 @@ export default function ReviewsPage() {
 
     if (!confirm.isConfirmed) return;
 
-    const res = await fetch(`${API_URL}/reviews/${id}`, {
+    const res = await adminFetch(`/reviews/${id}`, {
       method: 'DELETE',
     });
 
@@ -63,14 +60,14 @@ export default function ReviewsPage() {
   };
 
   if (loading) {
-    return <p className="font-bold text-purple-700">Loading reviews...</p>;
+    return <p className="font-bold text-primary">Loading reviews...</p>;
   }
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black text-[#16013d]">
+          <h1 className="text-2xl font-black text-foreground sm:text-4xl">
             Reviews Management
           </h1>
           <p className="mt-2 text-gray-500">
@@ -80,7 +77,7 @@ export default function ReviewsPage() {
 
         <Link
           href="/dashboard/reviews/add"
-          className="rounded-xl bg-purple-700 px-6 py-3 font-bold text-white"
+          className="min-h-11 inline-flex items-center justify-center min-h-11 inline-flex items-center rounded-xl bg-primary px-6 py-3 font-bold text-white"
         >
           + Add Review
         </Link>
@@ -90,17 +87,17 @@ export default function ReviewsPage() {
         {reviews.map((item) => (
           <div
             key={item._id}
-            className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+            className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
           >
             <div className="mb-5 flex items-center gap-4">
               <img
                 src={item.image || '/avatar.png'}
                 alt={item.name}
-                className="h-16 w-16 rounded-full border-2 border-purple-100 object-cover"
+                className="h-16 w-16 rounded-full border-2 border-primary/10 object-cover"
               />
 
               <div>
-                <h3 className="text-lg font-black text-[#16013d]">
+                <h3 className="text-lg font-black text-foreground">
                   {item.name}
                 </h3>
                 <p className="text-sm text-gray-500">
@@ -135,14 +132,14 @@ export default function ReviewsPage() {
               <div className="flex gap-2">
                 <Link
                   href={`/dashboard/reviews/edit/${item._id}`}
-                  className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-bold text-blue-600"
+                  className="min-h-11 inline-flex items-center justify-center rounded-lg bg-blue-50 px-4 py-2 text-sm font-bold text-blue-600"
                 >
                   Edit
                 </Link>
 
                 <button
                   onClick={() => handleDelete(item._id)}
-                  className="rounded-lg bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
+                  className="min-h-11 inline-flex items-center justify-center rounded-lg bg-red-50 px-4 py-2 text-sm font-bold text-red-600"
                 >
                   Delete
                 </button>
@@ -152,8 +149,8 @@ export default function ReviewsPage() {
         ))}
 
         {reviews.length === 0 && (
-          <div className="rounded-3xl bg-white p-8 text-center shadow-sm md:col-span-2 xl:col-span-3">
-            <h2 className="text-2xl font-black text-purple-700">
+          <div className="rounded-3xl bg-white p-4 sm:p-8 text-center shadow-sm md:col-span-2 xl:col-span-3">
+            <h2 className="text-2xl font-black text-primary">
               No reviews found
             </h2>
           </div>

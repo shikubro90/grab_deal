@@ -6,18 +6,24 @@ export default function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-    });
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+      });
+    } catch {}
 
-    localStorage.removeItem('grabdeal_user');
-    router.push('/login');
+    try {
+      localStorage.removeItem('grabdeal_user');
+    } catch {}
+    router.replace('/login');
+    router.refresh();
   };
 
   return (
     <button
       onClick={handleLogout}
-      className="rounded-xl bg-red-50 px-4 py-2 text-sm font-bold text-red-600 cursor-pointer"
+      className="min-h-11 rounded-xl bg-red-50 px-4 py-2 text-sm font-bold text-red-600 cursor-pointer"
     >
       Logout
     </button>

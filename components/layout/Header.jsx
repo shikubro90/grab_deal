@@ -2,128 +2,126 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Gem, Menu, Search, Shirt, Footprints, Watch, X } from 'lucide-react';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://grabdeal-server.vercel.app/api/v1';
+const NAV_ITEMS = [
+  { title: 'Clothing', icon: Shirt },
+  { title: 'Footwear', icon: Footprints },
+  { title: 'Watches', icon: Watch },
+  { title: 'Accessories', icon: Gem },
+];
+
+const categoryHref = (title) => `/offer?category=${encodeURIComponent(title)}`;
 
 export default function Header() {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [navItems, setNavItems] = useState(['All']);
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch(`${API_URL}/categories`);
-      const data = await res.json();
-
-      const categories = data?.data?.result || data?.data || data || [];
-
-      const categoryTitles = categories
-        .filter((item) => item.status === 'active')
-        .map((item) => item.title);
-
-      setNavItems(['All', ...categoryTitles]);
-    } catch (error) {
-      console.log('Category fetch error:', error);
-    }
+  const onSearch = (e) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    setMenuOpen(false);
+    router.push(`/offer?search=${encodeURIComponent(q)}`);
   };
 
+  const SearchForm = ({ className = '' }) => (
+    <form onSubmit={onSearch} role="search" className={className}>
+      <div className="flex w-full items-center overflow-hidden rounded-full border border-border bg-muted focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search deals, stores & offers"
+          aria-label="Search offers"
+          className="min-w-0 w-full bg-transparent px-4 py-2.5 text-base md:text-sm outline-none placeholder:text-muted-foreground"
+        />
+        <button
+          type="submit"
+          aria-label="Search"
+          className="m-1 flex h-9 w-10 shrink-0 items-center justify-center rounded-full text-primary-foreground"
+          style={{ background: 'var(--brand-gradient)' }}
+        >
+          <Search className="h-4 w-4" />
+        </button>
+      </div>
+    </form>
+  );
+
   return (
-    <header className="sticky top-0 z-50 border-b border-purple-100 bg-white/90 shadow-sm backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <Image src="/logo.png" width={150} height={70} alt="" />
+        <div className="flex h-14 items-center gap-3 sm:h-16 sm:gap-4">
+          <Link href="/" className="flex shrink-0 items-center" aria-label="Home">
+            <Image src="/logo.png" width={140} height={56} alt="GrabDeal" priority className="h-10 w-auto sm:h-auto" />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8 text-sm font-bold">
-            <div className="group relative">
-              <button className="rounded-xl bg-purple-50 px-5 py-3 text-purple-700">
-                All ⌄
-              </button>
+          {SearchForm({ className: 'hidden flex-1 md:block md:max-w-xl lg:mx-auto' })}
 
-              <div className="invisible absolute left-0 top-14 w-52 rounded-2xl border border-purple-100 bg-white p-3 opacity-0 shadow-xl transition-all duration-300 group-hover:visible group-hover:opacity-100">
-                {navItems.map((item) => (
-                  <a
-                    key={item}
-                   href={
-            item === "All"
-              ? "/offer"
-              : `/offer?category=${encodeURIComponent(item)}`
-          }
-                    className="block rounded-xl px-4 py-3 hover:bg-purple-50"
-                  >
-                    {item}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {navItems.slice(1, 5).map((item) => (
-              <a
-                key={item}
-                href={
-            item === "All"
-              ? "/offer"
-              : `/offer?category=${encodeURIComponent(item)}`
-          }
-                className="hover:text-purple-700 transition"
-              >
-                {item}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="https://wa.me/88000000000"
-              className="hidden sm:flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-purple-700 hover:bg-purple-50"
-            >
-              💬 WhatsApp
-            </a>
-
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden rounded-xl p-2 hover:bg-purple-50"
-            >
-              {menuOpen ? '✕' : '☰'}
-            </button>
-          </div>
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+            className="ml-auto flex h-11 w-11 items-center justify-center rounded-lg text-foreground hover:bg-muted md:hidden"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
         </div>
 
-        {menuOpen && (
-          <div className="lg:hidden border-t border-purple-100 py-4">
-            <nav className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={
-            item === "All"
-              ? "/offer"
-              : `/offer?category=${encodeURIComponent(item)}`
-          }
-                  className="rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item}
-                </a>
-              ))}
+        {SearchForm({ className: 'pb-2 md:hidden' })}
 
-              <a
-                href="https://wa.me/88000000000"
-                className="mt-2 rounded-xl bg-green-50 px-4 py-3 text-sm font-bold text-green-600"
-              >
-                💬 WhatsApp
-              </a>
-            </nav>
-          </div>
-        )}
+        <nav className="hidden items-center gap-1 pb-2 md:flex">
+          {NAV_ITEMS.map(({ title, icon: Icon }) => (
+            <Link
+              key={title}
+              href={categoryHref(title)}
+              className="flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold text-foreground transition hover:bg-muted hover:text-primary"
+            >
+              <Icon className="h-4 w-4 text-primary" />
+              {title}
+            </Link>
+          ))}
+        </nav>
       </div>
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMenuOpen(false)}
+          />
+          <aside className="absolute right-0 top-0 flex h-full w-72 max-w-[85%] flex-col gap-4 bg-white p-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <Image src="/logo.png" width={110} height={44} alt="GrabDeal" />
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                className="flex h-11 w-11 items-center justify-center rounded-lg hover:bg-muted"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {SearchForm({})}
+
+            <nav className="flex flex-col gap-1">
+              {NAV_ITEMS.map(({ title, icon: Icon }) => (
+                <Link
+                  key={title}
+                  href={categoryHref(title)}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 min-h-11 rounded-xl px-3 py-3 text-sm font-semibold hover:bg-muted hover:text-primary"
+                >
+                  <Icon className="h-5 w-5 text-primary" />
+                  {title}
+                </Link>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      )}
     </header>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
+import { adminFetch } from '@/lib/api';
 
 export default function AllBrandsPage() {
   const [brands, setBrands] = useState([]);
@@ -12,7 +13,7 @@ export default function AllBrandsPage() {
     try {
       setLoading(true);
 
-      const res = await fetch('https://grabdeal-server.vercel.app/api/v1/brands', {
+      const res = await adminFetch('/brands', {
         cache: 'no-store',
       });
 
@@ -30,7 +31,6 @@ export default function AllBrandsPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
@@ -53,7 +53,7 @@ export default function AllBrandsPage() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`https://grabdeal-server.vercel.app/api/v1/brands/${id}`, {
+      const res = await adminFetch(`/brands/${id}`, {
         method: 'DELETE',
       });
 
@@ -86,7 +86,6 @@ export default function AllBrandsPage() {
         confirmButtonColor: '#7b00ff',
       });
 
-      console.log(error);
     }
   };
 
@@ -94,7 +93,7 @@ export default function AllBrandsPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-4xl font-black text-[#16013d]">
+          <h1 className="text-2xl font-black text-foreground sm:text-4xl">
             All Brands
           </h1>
 
@@ -105,17 +104,17 @@ export default function AllBrandsPage() {
 
         <Link
           href="/dashboard/brands"
-          className="rounded-xl bg-purple-700 px-6 py-3 text-center font-bold text-white hover:bg-purple-800"
+          className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-6 py-3 text-center font-bold text-white hover:bg-primary"
         >
           + Add Brand
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-purple-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-primary/10 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[850px] border-collapse">
             <thead>
-              <tr className="bg-purple-50 text-left text-sm text-purple-900">
+              <tr className="bg-primary/5 text-left text-sm text-primary">
                 <th className="px-5 py-4 font-black">Logo</th>
                 <th className="px-5 py-4 font-black">Brand Name</th>
                 <th className="px-5 py-4 font-black">Status</th>
@@ -145,7 +144,7 @@ export default function AllBrandsPage() {
                 brands.map((brand) => (
                   <tr
                     key={brand._id}
-                    className="border-t border-purple-100 text-sm hover:bg-purple-50/40"
+                    className="border-t border-primary/10 text-sm hover:bg-primary/5"
                   >
                     <td className="px-5 py-4">
                       <div className="flex h-16 w-24 items-center justify-center rounded-xl border bg-white p-2">
@@ -162,7 +161,7 @@ export default function AllBrandsPage() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="text-lg font-black text-[#16013d]">
+                      <p className="text-lg font-black text-foreground">
                         {brand.name}
                       </p>
                     </td>
@@ -189,14 +188,14 @@ export default function AllBrandsPage() {
                       <div className="flex justify-end gap-2">
                         <Link
                           href={`/dashboard/brands/edit/${brand._id}`}
-                          className="rounded-lg bg-purple-50 px-4 py-2 text-xs font-bold text-purple-700 hover:bg-purple-100"
+                          className="min-h-11 inline-flex items-center justify-center rounded-lg bg-primary/5 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/10"
                         >
                           Edit
                         </Link>
 
                         <button
                           onClick={() => handleDelete(brand._id)}
-                          className="rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100"
+                          className="min-h-11 inline-flex items-center justify-center rounded-lg bg-red-50 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-100"
                         >
                           Delete
                         </button>

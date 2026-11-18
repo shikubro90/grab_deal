@@ -4,9 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { uploadToCloudinary } from "../../../../lib/uploadToCloudinary";
 import Swal from 'sweetalert2';
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
+import { adminFetch } from '@/lib/api';
 
 export default function AddBannerPage() {
   const router = useRouter();
@@ -82,7 +80,6 @@ export default function AddBannerPage() {
       });
     } catch (error) {
       setUploading(false);
-      console.log(error);
       Swal.fire('Upload Error', 'Server upload failed', 'error');
     }
   };
@@ -110,7 +107,7 @@ export default function AddBannerPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`${API_URL}/banner`, {
+      const res = await adminFetch(`/banner`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +135,6 @@ export default function AddBannerPage() {
       router.push('/dashboard/banner');
     } catch (error) {
       setSubmitting(false);
-      console.log('Banner create error:', error);
       Swal.fire('Server Error', 'Something went wrong', 'error');
     }
   };
@@ -146,7 +142,7 @@ export default function AddBannerPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">Add Banner</h1>
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">Add Banner</h1>
         <p className="mt-2 text-gray-500">
           Create homepage hero slider banner.
         </p>
@@ -154,7 +150,7 @@ export default function AddBannerPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+        className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
       >
         <div className="grid gap-5 md:grid-cols-2">
           <div className="md:col-span-2">
@@ -166,7 +162,7 @@ export default function AddBannerPage() {
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
 
             <p className="mt-2 text-xs text-gray-500">
@@ -174,7 +170,7 @@ export default function AddBannerPage() {
             </p>
 
             {uploading && (
-              <p className="mt-2 text-sm font-bold text-purple-600">
+              <p className="mt-2 text-sm font-bold text-primary">
                 Uploading...
               </p>
             )}
@@ -205,7 +201,7 @@ export default function AddBannerPage() {
               value={formData.title}
               onChange={handleChange}
               placeholder="Fashion Mega Sale"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -218,7 +214,7 @@ export default function AddBannerPage() {
               value={formData.discount}
               onChange={handleChange}
               placeholder="Up to 70% OFF"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -230,7 +226,7 @@ export default function AddBannerPage() {
               value={formData.position}
               onChange={handleChange}
               placeholder="1"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -242,7 +238,7 @@ export default function AddBannerPage() {
               value={formData.offerUrl}
               onChange={handleChange}
               placeholder="/offers"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -254,7 +250,7 @@ export default function AddBannerPage() {
               value={formData.subtitle}
               onChange={handleChange}
               placeholder="Find latest clothing, footwear and accessories offers from top stores."
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             />
           </div>
 
@@ -264,7 +260,7 @@ export default function AddBannerPage() {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full rounded-xl border border-purple-100 px-4 py-3"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -272,11 +268,11 @@ export default function AddBannerPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button
             type="submit"
             disabled={uploading || submitting}
-            className="rounded-xl bg-purple-700 px-8 py-3 font-bold text-white disabled:opacity-50"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white disabled:opacity-50"
           >
             {submitting ? 'Saving...' : 'Save Banner'}
           </button>
@@ -284,7 +280,7 @@ export default function AddBannerPage() {
           <button
             type="button"
             onClick={() => router.push('/dashboard/banner')}
-            className="rounded-xl border border-purple-200 px-8 py-3 font-bold text-purple-700"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl border border-primary/20 px-8 py-3 font-bold text-primary"
           >
             Cancel
           </button>

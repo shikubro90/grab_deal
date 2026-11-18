@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
@@ -47,7 +48,6 @@ export default function HeroSlider() {
       sessionStorage.setItem(CACHE_KEY, JSON.stringify(activeBanners));
       setSliders(activeBanners);
     } catch (error) {
-      console.log('Slider fetch error:', error);
     }
   };
 
@@ -63,7 +63,7 @@ export default function HeroSlider() {
  if (!sliders.length) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:px-8">
-      <div className="h-[260px] animate-pulse rounded-[24px] bg-purple-100 shadow-2xl sm:h-[340px] md:h-[430px] lg:h-[500px]" />
+      <div className="h-[260px] animate-pulse rounded-[24px] bg-primary/10 shadow-2xl sm:h-[340px] md:h-[430px] lg:h-[500px]" />
     </section>
   );
 }
@@ -72,12 +72,15 @@ export default function HeroSlider() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:px-8">
-      <div className="relative h-[260px] overflow-hidden rounded-[24px] bg-purple-900 shadow-2xl sm:h-[340px] md:h-[430px] lg:h-[500px] lg:rounded-[32px]">
+      <div className="relative h-[260px] overflow-hidden rounded-[24px] bg-primary shadow-2xl sm:h-[340px] md:h-[430px] lg:h-[500px] lg:rounded-[32px]">
         {currentSlide.image && (
-          <img
+          <Image
             src={currentSlide.image}
             alt={currentSlide.title || 'Slider image'}
-            className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out ${
+            fill
+            sizes="(min-width:1280px) 1280px, 100vw"
+            priority={activeSlide === 0}
+            className={`object-cover transition-all duration-700 ease-in-out ${
               fade ? 'scale-100 opacity-100' : 'scale-105 opacity-0'
             }`}
           />
@@ -110,7 +113,7 @@ export default function HeroSlider() {
 
           <a
             href={currentSlide.offerUrl || '#'}
-            className="mt-5 w-fit rounded-2xl bg-white px-5 py-3 text-sm font-bold text-purple-700 shadow-xl transition hover:scale-105 sm:mt-8 sm:px-7 sm:py-4 sm:text-base"
+            className="mt-5 w-fit rounded-2xl bg-white px-5 py-3 text-sm font-bold text-primary shadow-xl transition hover:scale-105 sm:mt-8 sm:px-7 sm:py-4 sm:text-base"
           >
             Explore Offers →
           </a>
@@ -122,14 +125,14 @@ export default function HeroSlider() {
               onClick={() =>
                 changeSlide((activeSlide - 1 + sliders.length) % sliders.length)
               }
-              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-3 py-2 text-xl font-black text-purple-700 shadow-xl sm:left-5 sm:px-4 sm:py-3 sm:text-2xl"
+              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-3 py-2 text-xl font-black text-primary shadow-xl sm:left-5 sm:px-4 sm:py-3 sm:text-2xl"
             >
               ‹
             </button>
 
             <button
               onClick={() => changeSlide((activeSlide + 1) % sliders.length)}
-              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-3 py-2 text-xl font-black text-purple-700 shadow-xl sm:right-5 sm:px-4 sm:py-3 sm:text-2xl"
+              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 px-3 py-2 text-xl font-black text-primary shadow-xl sm:right-5 sm:px-4 sm:py-3 sm:text-2xl"
             >
               ›
             </button>

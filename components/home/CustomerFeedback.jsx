@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
@@ -31,12 +32,10 @@ export default function CustomerFeedback() {
       const result =
         data?.data?.result || [];
 
-        console.log("revew",result)
         
 
       setReviews(result);
     } catch (error) {
-      console.log('Reviews fetch error:', error);
     }
   };
 
@@ -59,7 +58,7 @@ export default function CustomerFeedback() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-14 lg:px-8">
       <div className="mb-8 text-center">
-        <p className="text-sm font-bold uppercase tracking-wider text-purple-600">
+        <p className="text-sm font-bold uppercase tracking-wider text-primary">
           Real Users
         </p>
 
@@ -78,13 +77,15 @@ export default function CustomerFeedback() {
           {visibleReviews.map((item) => (
             <div
               key={item._id}
-              className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl"
+              className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
               <div className="mb-5 flex items-center gap-4">
-                <img
+                <Image
                   src={item.image || '/avatar.png'}
-                  alt={item.name}
-                  className="h-14 w-14 rounded-full border-2 border-purple-100 object-cover"
+                  alt={item.name || 'Customer'}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 rounded-full border-2 border-primary/10 object-cover"
                 />
 
                 <div>
@@ -119,14 +120,14 @@ export default function CustomerFeedback() {
           <>
             <button
               onClick={prevSlide}
-              className="absolute -left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-purple-700 shadow-xl lg:block"
+              className="absolute -left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-primary shadow-xl lg:block"
             >
               ‹
             </button>
 
             <button
               onClick={nextSlide}
-              className="absolute -right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-purple-700 shadow-xl lg:block"
+              className="absolute -right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white px-4 py-3 text-xl font-black text-primary shadow-xl lg:block"
             >
               ›
             </button>
@@ -142,8 +143,8 @@ export default function CustomerFeedback() {
               onClick={() => setActive(index)}
               className={
                 index === active
-                  ? 'h-3 w-10 rounded-full bg-purple-700 transition-all'
-                  : 'h-3 w-3 rounded-full bg-purple-200 transition-all'
+                  ? 'h-3 w-10 rounded-full bg-primary transition-all'
+                  : 'h-3 w-3 rounded-full bg-primary/20 transition-all'
               }
             />
           ))}

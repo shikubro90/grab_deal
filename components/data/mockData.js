@@ -9,9 +9,6 @@ export async function newToday() {
 
   const data = await res.json();
 
-
-  console.log("fslkdfjslkdfjlsfd",data)
-
   const offers = data?.data?.products || data?.data || data || [];
 
   return offers.map((item) => ({

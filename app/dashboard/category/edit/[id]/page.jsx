@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://grabdeal-server.vercel.app/api/v1';
+import { adminFetch } from '@/lib/api';
 
 export default function EditCategoryPage() {
   const { id } = useParams();
@@ -28,7 +26,7 @@ export default function EditCategoryPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/categories/${id}`);
+      const res = await adminFetch(`/categories/${id}`);
       const data = await res.json();
 
       const category = data?.data?.result || data?.data || data;
@@ -44,7 +42,6 @@ export default function EditCategoryPage() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('Category fetch error:', error);
 
       Swal.fire({
         icon: 'error',
@@ -80,7 +77,7 @@ export default function EditCategoryPage() {
     try {
       setSubmitting(true);
 
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await adminFetch(`/categories/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +112,6 @@ export default function EditCategoryPage() {
      
     } catch (error) {
       setSubmitting(false);
-      console.log('Category update error:', error);
 
       Swal.fire({
         icon: 'error',
@@ -127,8 +123,8 @@ export default function EditCategoryPage() {
 
   if (loading) {
     return (
-      <div className="rounded-3xl bg-white p-8 shadow-sm">
-        <p className="font-bold text-purple-700">Loading category...</p>
+      <div className="rounded-3xl bg-white p-4 sm:p-8 shadow-sm">
+        <p className="font-bold text-primary">Loading category...</p>
       </div>
     );
   }
@@ -136,7 +132,7 @@ export default function EditCategoryPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-[#16013d]">
+        <h1 className="text-2xl font-black text-foreground sm:text-4xl">
           Edit Category
         </h1>
         <p className="mt-2 text-gray-500">
@@ -146,7 +142,7 @@ export default function EditCategoryPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-3xl border border-purple-100 bg-white p-6 shadow-sm"
+        className="rounded-3xl border border-primary/10 bg-white p-6 shadow-sm"
       >
         <div className="grid gap-5 md:grid-cols-2">
           <div>
@@ -160,7 +156,7 @@ export default function EditCategoryPage() {
               onChange={handleChange}
               placeholder="Electronics"
               required
-              className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
             />
           </div>
 
@@ -174,7 +170,7 @@ export default function EditCategoryPage() {
               value={formData.status}
               onChange={handleChange}
               required
-              className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -192,7 +188,7 @@ export default function EditCategoryPage() {
               value={formData.imageURLs}
               onChange={handleChange}
               placeholder="https://example.com/image-1.jpg"
-              className="w-full rounded-xl border border-purple-100 px-4 py-3 outline-none focus:border-purple-500"
+              className="min-h-11 w-full rounded-xl border border-primary/10 px-4 py-3 text-base outline-none focus:border-primary/80"
             />
 
             <p className="mt-2 text-xs text-gray-500">
@@ -218,11 +214,11 @@ export default function EditCategoryPage() {
           </div>
         )}
 
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-xl bg-purple-700 px-8 py-3 font-bold text-white disabled:opacity-50"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl bg-primary px-8 py-3 font-bold text-white disabled:opacity-50"
           >
             {submitting ? 'Updating...' : 'Update Category'}
           </button>
@@ -230,7 +226,7 @@ export default function EditCategoryPage() {
           <button
             type="button"
             onClick={() => router.push('/dashboard/categories')}
-            className="rounded-xl border border-purple-200 px-8 py-3 font-bold text-purple-700"
+            className="min-h-11 inline-flex items-center justify-center min-h-11 rounded-xl border border-primary/20 px-8 py-3 font-bold text-primary"
           >
             Cancel
           </button>

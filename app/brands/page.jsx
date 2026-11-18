@@ -33,8 +33,8 @@ export default async function BrandsPage() {
 
       <section className="min-h-screen bg-[#faf8ff] px-4 py-10 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 rounded-[32px] bg-gradient-to-r from-purple-700 to-[#16013d] p-8 text-white shadow-xl">
-            <p className="text-sm font-bold uppercase tracking-widest text-purple-200">
+          <div className="mb-10 rounded-[32px] bg-gradient-to-r from-primary to-[#16013d] p-8 text-white shadow-xl">
+            <p className="text-sm font-bold uppercase tracking-widest text-primary/20">
               Trusted Brands
             </p>
 
@@ -49,7 +49,7 @@ export default async function BrandsPage() {
 
           {brands.length === 0 ? (
             <div className="rounded-3xl bg-white p-10 text-center shadow-sm">
-              <h2 className="text-2xl font-black text-purple-700">
+              <h2 className="text-2xl font-black text-primary">
                 No brands found
               </h2>
             </div>
@@ -59,10 +59,10 @@ export default async function BrandsPage() {
                 <Link
                   key={brand._id}
                   href={`/offer?brand=${encodeURIComponent(brand.name)}`}
-                  className="group rounded-[28px] border border-purple-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  className="group rounded-[28px] border border-primary/10 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
                   <div className="flex items-center gap-5">
-                    <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-purple-50 p-4 shadow-inner">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-primary/5 p-4 shadow-inner">
                       <img
                         src={brand.image}
                         alt={brand.name}
@@ -71,7 +71,7 @@ export default async function BrandsPage() {
                     </div>
 
                     <div>
-                      <h2 className="text-2xl font-black text-[#16013d] group-hover:text-purple-700">
+                      <h2 className="text-2xl font-black text-[#16013d] group-hover:text-primary">
                         {brand.name}
                       </h2>
 
