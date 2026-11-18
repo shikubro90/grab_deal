@@ -22,7 +22,7 @@ export default async function HomePage() {
       <Header />
 
       <main>
-        <HeroSlider sliders={banners} />
+        <HeroSlider sliders={banners} offers={offers} />
         <PopularOffers items={offers} />
         <PopularStores brands={brands} offers={offers} />
         <div className="[content-visibility:auto] [contain-intrinsic-size:auto_700px]"><TopCoupons items={offers} /></div>
